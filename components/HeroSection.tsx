@@ -22,7 +22,7 @@ const HeroSection = () => {
 								className="text-white text-[40px] md:text-5xl xl:text-[64px] uppercase pb-5 sm:pb-6 xl:pb-8 lg:max-w-[620px] max-lg:text-center overflow-hidden text-balance"
 								id="heading"
 							>
-								Хаос, забава и хумор, спакувано во една кутија!
+								Хаос, забава и хумор, спакувано во една кутија! TESTING
 							</h1>
 						</Animations>
 						<Animations delay={0.7}>
