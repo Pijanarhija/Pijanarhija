@@ -40,10 +40,12 @@ const WhatYouGet = () => {
             </Animations>
             <div className="flex flex-col gap-4">
               {whatYouGetData.map((data: WhatYouGet) => (
-                <div key={data.id} className="flex items-start gap-4">
-                  <Image src={checkIcon} alt="check icon" />
+                <div key={data.id} className="">
                   <Animations delay={0.3}>
-                    <p className="text-light-300">{data.text}</p>
+                    <div className="flex items-start gap-4">
+                      <Image src={checkIcon} alt="check icon" />
+                      <p className="text-light-300">{data.text}</p>
+                    </div>
                   </Animations>
                 </div>
               ))}
