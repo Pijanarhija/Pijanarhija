@@ -51,14 +51,16 @@ const ImageAnimations = ({
       }
 
       gsap.set(imageElements.current, {
-        clipPath: "polygon(0 100%, 100% 100%, 100% 100%, 0% 100%)",
+        opacity: 0,
+        y: 50,
       });
 
       gsap.set(containerRef.current, { visibility: "visible" });
       setIsReady(true);
 
       const animationProps = {
-        clipPath: "polygon(0 100%, 100% 100%, 100% 0%, 0% 0%)",
+        opacity: 1,
+        y: 0,
         duration: 1.5,
         stagger: 0.15,
         ease: "power4.out",
