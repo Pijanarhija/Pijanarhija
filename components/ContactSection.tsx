@@ -10,20 +10,6 @@ const ContactSection = () => {
       id="контакт"
     >
       <div className="container mx-auto px-4 lg:px-6">
-        <ul className="list-disc flex flex-col gap-1 pl-6 lg:hidden pb-8">
-          <Animations delay={0.3}>
-            <li className="text-light-100 text-base sm:text-lg">
-              Само 690 ден.
-            </li>
-            <li className="text-light-100 text-base sm:text-lg">
-              БЕСПЛАТНА ДОСТАВА Низ цела Македонија!
-            </li>
-            <li className="text-light-100 text-base sm:text-lg">
-              Купи еднаш, играј засекогаш! Бескрајна забавa!
-            </li>
-          </Animations>
-        </ul>
-
         <div className="grid grid-cols-1 lg:grid-cols-2 items-center gap-8 bg-light-100 lg:rounded-xl px-5 md:px-10 py-9 md:py-14">
           <div className="relative h-full w-full overflow-hidden rounded-lg max-lg:hidden">
             <ImageAnimations delay={0.3}>
