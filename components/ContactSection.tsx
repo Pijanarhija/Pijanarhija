@@ -15,12 +15,15 @@ const ContactSection = () => {
 		e.preventDefault();
 		const form = e.currentTarget;
 		const formData = new FormData(form);
+		const formEntries = Object.fromEntries(formData);
 
 		try {
 			const response = await fetch("/", {
 				method: "POST",
 				headers: { "Content-Type": "application/x-www-form-urlencoded" },
-				body: new URLSearchParams(formData as any).toString(),
+				body: new URLSearchParams(
+					formEntries as Record<string, string>,
+				).toString(),
 			});
 
 			if (response.ok) {
@@ -44,7 +47,12 @@ const ContactSection = () => {
 			id="контакт"
 		>
 			{/* Hidden form for Netlify detection - IMPORTANT! */}
-			<form name="contact" netlify netlify-honeypot="bot-field" hidden>
+			<form
+				name="contact"
+				data-netlify="true"
+				data-netlify-honeypot="bot-field"
+				hidden
+			>
 				<input type="text" name="name" />
 				<input type="email" name="email" />
 				<input type="text" name="phone" />
