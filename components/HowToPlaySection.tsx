@@ -18,7 +18,7 @@ const howToPlayData: HowToPlay[] = [
 	{
 		id: 2,
 		number: "2",
-		text: "Кругот се движи во насока на часовникот, а прв почнува на овој кој најбргу му се ближи роденден.",
+		text: "Прв почнува оној кој најбрзо му се ближи роденден. Кругот се движи во насока на часовникот.",
 	},
 	{
 		id: 3,
@@ -33,7 +33,7 @@ const howToPlayData: HowToPlay[] = [
 	{
 		id: 5,
 		number: "5",
-		text: "Дополнитени правила во правилникот на самата игра.",
+		text: "Дополнитени правила - во правилникот на самата игра.",
 	},
 ];
 
@@ -44,7 +44,7 @@ const HowToPlaySection = () => {
 				<div className="relative lg:w-fit">
 					<Animations delay={0.3}>
 						<h2 className="uppercase text-dark max-w-[383px]">
-							Како се игра пијандисани?
+							Како се игра пијанархија?
 						</h2>
 
 						<div className="absolute max-lg:bottom-1/2 max-lg:translate-y-1/2 lg:-bottom-12 right-0 sm:right-[30%] lg:-right-6 max-[400px]:hidden">
