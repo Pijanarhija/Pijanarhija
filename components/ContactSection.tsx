@@ -13,7 +13,7 @@ const ContactSection = () => {
 			await fetch("/", {
 				method: "POST",
 				headers: { "Content-Type": "application/x-www-form-urlencoded" },
-				body: new URLSearchParams(formData).toString(),
+				body: new URLSearchParams(formData as any).toString(),
 			});
 			e.currentTarget.reset();
 		} catch (error) {
