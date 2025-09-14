@@ -9,11 +9,15 @@ const ContactSection = () => {
 		e.preventDefault();
 		const formData = new FormData(e.currentTarget);
 
+		const formEntries = Object.fromEntries(formData);
+
 		try {
 			await fetch("/", {
 				method: "POST",
 				headers: { "Content-Type": "application/x-www-form-urlencoded" },
-				body: new URLSearchParams(formData as any).toString(),
+				body: new URLSearchParams(
+					formEntries as Record<string, string>,
+				).toString(),
 			});
 			e.currentTarget.reset();
 		} catch (error) {
