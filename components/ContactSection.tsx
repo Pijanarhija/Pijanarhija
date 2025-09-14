@@ -10,12 +10,14 @@ import ImageAnimations from "./ImageAnimations";
 
 const ContactSection = () => {
 	const [showSuccessPopup, setShowSuccessPopup] = useState(false);
+	const [showErrorPopup, setShowErrorPopup] = useState(false);
 
 	const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 		const form = e.currentTarget;
 		const formData = new FormData(form);
 		const formEntries = Object.fromEntries(formData);
+		console.log("Submitting form data:", formEntries);
 
 		try {
 			const response = await fetch("/", {
@@ -25,20 +27,27 @@ const ContactSection = () => {
 					formEntries as Record<string, string>,
 				).toString(),
 			});
+			const responseText = await response.text();
+			console.log("Response status:", response.status);
+			console.log("Response body:", responseText);
 
-			if (response.ok) {
+			if (response.ok && responseText.includes("Success")) {
+				console.log("Form submitted successfully to Netlify!");
 				form.reset();
 				setShowSuccessPopup(true);
 			} else {
-				console.error("Form submission failed:", response.status);
+				console.error("Form submission failed:", response.status, responseText);
+				setShowErrorPopup(true);
 			}
 		} catch (error) {
-			console.error("Form submission error:", error);
+			console.error("Fetch error:", error);
+			setShowErrorPopup(true);
 		}
 	};
 
 	const closePopup = () => {
 		setShowSuccessPopup(false);
+		setShowErrorPopup(false);
 	};
 
 	return (
@@ -46,21 +55,6 @@ const ContactSection = () => {
 			className="relative overflow-hidden bg-accent py-16 md:py-24 lg:py-36"
 			id="контакт"
 		>
-			{/* Hidden form for Netlify detection - IMPORTANT! */}
-			<form
-				name="contact"
-				data-netlify="true"
-				data-netlify-honeypot="bot-field"
-				hidden
-			>
-				<input type="text" name="name" />
-				<input type="email" name="email" />
-				<input type="text" name="phone" />
-				<input type="text" name="city" />
-				<input type="text" name="address" />
-				<input type="text" name="amount" />
-			</form>
-
 			<div className="container mx-auto px-4 lg:px-6">
 				<div className="grid grid-cols-1 lg:grid-cols-2 items-center gap-8 bg-light-100 lg:rounded-xl px-5 md:px-10 py-9 md:py-14">
 					<div className="relative h-full w-full overflow-hidden rounded-lg max-lg:hidden">
@@ -81,13 +75,13 @@ const ContactSection = () => {
 										БЕСПЛАТНА ДОСТАВА Низ цела Македонија!
 									</li>
 									<li className="text-light-100 text-base sm:text-lg">
-										Купи еднаш, играј засекогаш! Бескрајна забавa!
+										Купи еднаш, играј засекогаш! Бескрайна забавa!
 									</li>
 								</Animations>
 							</ul>
 						</div>
 					</div>
-					<div className="">
+					<div>
 						<Animations delay={0.3}>
 							<h2 className="text-dark pb-6 uppercase">
 								Доста беа досадни вечери!
@@ -109,7 +103,6 @@ const ContactSection = () => {
 						>
 							<input type="hidden" name="form-name" value="contact" />
 							<input type="hidden" name="bot-field" />
-
 							<div className="flex flex-col gap-1 sm:col-span-5">
 								<Animations delay={0.3}>
 									<label htmlFor="name" className="text-dark text-lg">
@@ -121,7 +114,7 @@ const ContactSection = () => {
 									type="text"
 									name="name"
 									id="name"
-									placeholder="ex. Ангел Стојковски "
+									placeholder="ex. Ангел Стојковски"
 									className="px-5 py-3 bg-light-300 rounded-[10px] focus outline-accent"
 								/>
 							</div>
@@ -220,7 +213,6 @@ const ContactSection = () => {
 					</div>
 				</div>
 			</div>
-
 			{/* Success Popup */}
 			{showSuccessPopup && (
 				<div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
@@ -243,13 +235,40 @@ const ContactSection = () => {
 								Ти благодариме! Твојата Пијанархија е во подготовка. Очекувај
 								достава за 1–5 дена. Плаќање на рака.
 							</p>
-
 							<Link
 								href="/"
 								className="flex items-center justify-center cursor-pointer w-full bg-[#2DCC70] border border-[#2DCC70] text-xl text-light-100 px-7 py-4 font-bold hover:bg-light-100 hover:text-[#2DCC70] transition-colors duration-300 ease-in-out"
 							>
 								Назад кон почетна
 							</Link>
+						</div>
+					</div>
+				</div>
+			)}
+			{/* Error Popup */}
+			{showErrorPopup && (
+				<div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+					<div className="bg-light-100 p-8 rounded-lg shadow-lg max-w-md mx-4 relative">
+						<button
+							type="button"
+							onClick={closePopup}
+							className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 text-2xl cursor-pointer"
+						>
+							×
+						</button>
+						<div className="text-center">
+							<h3 className="text-dark mb-2 text-center uppercase pt-10 pb-5">
+								Submission Failed
+							</h3>
+							<p className="text-body text-center pb-16">
+								Something went wrong. Please try again later.
+							</p>
+							<button
+								onClick={closePopup}
+								className="flex items-center justify-center cursor-pointer w-full bg-[#2DCC70] border border-[#2DCC70] text-xl text-light-100 px-7 py-4 font-bold hover:bg-light-100 hover:text-[#2DCC70] transition-colors duration-300 ease-in-out"
+							>
+								Close
+							</button>
 						</div>
 					</div>
 				</div>
