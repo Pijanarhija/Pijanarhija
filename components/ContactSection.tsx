@@ -1,9 +1,43 @@
+"use client";
+
 import Image from "next/image";
+import { useState } from "react";
 import contactImage from "../public/assets/constact-image.png";
 import Animations from "./Animations";
 import ImageAnimations from "./ImageAnimations";
 
 const ContactSection = () => {
+	const [isSubmitting, setIsSubmitting] = useState(false);
+	const [submitStatus, setSubmitStatus] = useState(null);
+
+	const handleSubmit = async (e) => {
+		e.preventDefault();
+		setIsSubmitting(true);
+		setSubmitStatus(null);
+
+		const formData = new FormData(e.target);
+
+		try {
+			const response = await fetch("/", {
+				method: "POST",
+				headers: { "Content-Type": "application/x-www-form-urlencoded" },
+				body: new URLSearchParams(formData).toString(),
+			});
+
+			if (response.ok) {
+				setSubmitStatus("success");
+				e.target.reset();
+			} else {
+				setSubmitStatus("error");
+			}
+		} catch (error) {
+			console.error("Form submission error:", error);
+			setSubmitStatus("error");
+		} finally {
+			setIsSubmitting(false);
+		}
+	};
+
 	return (
 		<section
 			className="relative overflow-hidden bg-accent py-16 md:py-24 lg:py-36"
@@ -19,7 +53,6 @@ const ContactSection = () => {
 								className="h-full w-full object-cover"
 							/>
 						</ImageAnimations>
-
 						<div className="absolute bottom-8 left-1/2 -translate-x-1/2 w-full">
 							<ul className="list-disc flex flex-col gap-1 pl-10 xl:pl-20">
 								<Animations delay={0.3}>
@@ -49,10 +82,28 @@ const ContactSection = () => {
 							</p>
 						</Animations>
 
+						{/* Status Messages */}
+						{submitStatus === "success" && (
+							<div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
+								Вашата нарачка е успешно пратена! Ќе ве контактираме наскоро.
+							</div>
+						)}
+						{submitStatus === "error" && (
+							<div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+								Настана грешка. Ве молиме обидете се повторно.
+							</div>
+						)}
+
 						<form
-							action=""
+							name="contact"
+							method="POST"
+							data-netlify="true"
+							onSubmit={handleSubmit}
 							className="grid grid-cols-1 sm:grid-cols-5 gap-5 pt-8"
 						>
+							{/* Hidden field for Netlify */}
+							<input type="hidden" name="form-name" value="contact" />
+
 							<div className="flex flex-col gap-1 sm:col-span-5">
 								<Animations delay={0.3}>
 									<label htmlFor="name" className="text-dark text-lg">
@@ -136,7 +187,8 @@ const ContactSection = () => {
 								</Animations>
 								<input
 									required
-									type="text"
+									type="number"
+									min="1"
 									name="amount"
 									id="amount"
 									placeholder="ex. 1"
