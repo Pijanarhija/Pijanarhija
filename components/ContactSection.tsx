@@ -50,9 +50,6 @@ const ContactSection = () => {
 						</Animations>
 
 						<form
-							name="contact"
-							method="POST"
-							data-netlify="true"
 							action=""
 							className="grid grid-cols-1 sm:grid-cols-5 gap-5 pt-8"
 						>
