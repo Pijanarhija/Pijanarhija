@@ -1,18 +1,21 @@
 "use client";
-
 import Image from "next/image";
+import Link from "next/link";
 import type { FormEvent } from "react";
+import { useState } from "react";
 import contactImage from "../public/assets/constact-image.png";
+import popupCheck from "../public/assets/popup-check.svg";
 import Animations from "./Animations";
 import ImageAnimations from "./ImageAnimations";
 
 const ContactSection = () => {
+	const [showSuccessPopup, setShowSuccessPopup] = useState(false);
+
 	const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
-		const formData = new FormData(e.currentTarget);
-
+		const form = e.currentTarget;
+		const formData = new FormData(form);
 		const formEntries = Object.fromEntries(formData);
-
 		try {
 			await fetch("/", {
 				method: "POST",
@@ -21,10 +24,15 @@ const ContactSection = () => {
 					formEntries as Record<string, string>,
 				).toString(),
 			});
-			e.currentTarget.reset();
+			form.reset();
+			setShowSuccessPopup(true);
 		} catch (error) {
 			console.error("Form submission error:", error);
 		}
+	};
+
+	const closePopup = () => {
+		setShowSuccessPopup(false);
 	};
 
 	return (
@@ -78,7 +86,6 @@ const ContactSection = () => {
 							className="grid grid-cols-1 sm:grid-cols-5 gap-5 pt-8"
 						>
 							<input type="hidden" name="form-name" value="contact" />
-
 							<div className="flex flex-col gap-1 sm:col-span-5">
 								<Animations delay={0.3}>
 									<label htmlFor="name" className="text-dark text-lg">
@@ -189,6 +196,40 @@ const ContactSection = () => {
 					</div>
 				</div>
 			</div>
+
+			{/* Success Popup */}
+			{showSuccessPopup && (
+				<div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+					<div className="bg-light-100 p-8 rounded-lg shadow-lg max-w-md mx-4 relative">
+						<button
+							type="button"
+							onClick={closePopup}
+							className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 text-2xl cursor-pointer"
+						>
+							×
+						</button>
+						<div className="text-center">
+							<div className="mx-auto flex items-center justify-center pt-10">
+								<Image src={popupCheck} alt="check icon" />
+							</div>
+							<h3 className="text-dark mb-2 text-center uppercase pt-10 pb-5">
+								Нарачката е примена!
+							</h3>
+							<p className="text-body text-center pb-16">
+								Ти благодариме! Твојата Пијанархија е во подготовка. Очекувај
+								достава за 1–5 дена. Плаќање на рака.
+							</p>
+
+							<Link
+								href="/"
+								className="flex items-center justify-center cursor-pointer w-full bg-[#2DCC70] border border-[#2DCC70] text-xl text-light-100 px-7 py-4 font-bold hover:bg-light-100 hover:text-[#2DCC70] transition-colors duration-300 ease-in-out"
+							>
+								Назад кон почетна
+							</Link>
+						</div>
+					</div>
+				</div>
+			)}
 		</section>
 	);
 };
