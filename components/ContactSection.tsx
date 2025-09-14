@@ -1,3 +1,5 @@
+"use client";
+
 import Image from "next/image";
 import type { FormEvent } from "react";
 import contactImage from "../public/assets/constact-image.png";
