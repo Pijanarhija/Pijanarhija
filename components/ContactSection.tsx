@@ -1,5 +1,4 @@
 "use client";
-
 import Image from "next/image";
 import Link from "next/link";
 import type { FormEvent } from "react";
@@ -18,13 +17,18 @@ const ContactSection = () => {
 		const formData = new FormData(form);
 
 		try {
-			await fetch("/", {
+			const response = await fetch("/", {
 				method: "POST",
 				headers: { "Content-Type": "application/x-www-form-urlencoded" },
 				body: new URLSearchParams(formData as any).toString(),
 			});
-			form.reset();
-			setShowSuccessPopup(true);
+
+			if (response.ok) {
+				form.reset();
+				setShowSuccessPopup(true);
+			} else {
+				console.error("Form submission failed:", response.status);
+			}
 		} catch (error) {
 			console.error("Form submission error:", error);
 		}
@@ -39,6 +43,16 @@ const ContactSection = () => {
 			className="relative overflow-hidden bg-accent py-16 md:py-24 lg:py-36"
 			id="контакт"
 		>
+			{/* Hidden form for Netlify detection - IMPORTANT! */}
+			<form name="contact" netlify netlify-honeypot="bot-field" hidden>
+				<input type="text" name="name" />
+				<input type="email" name="email" />
+				<input type="text" name="phone" />
+				<input type="text" name="city" />
+				<input type="text" name="address" />
+				<input type="text" name="amount" />
+			</form>
+
 			<div className="container mx-auto px-4 lg:px-6">
 				<div className="grid grid-cols-1 lg:grid-cols-2 items-center gap-8 bg-light-100 lg:rounded-xl px-5 md:px-10 py-9 md:py-14">
 					<div className="relative h-full w-full overflow-hidden rounded-lg max-lg:hidden">
@@ -86,12 +100,8 @@ const ContactSection = () => {
 							className="grid grid-cols-1 sm:grid-cols-5 gap-5 pt-8"
 						>
 							<input type="hidden" name="form-name" value="contact" />
-							<p className="hidden">
-								<label>
-									Don't fill this out if you're human:{" "}
-									<input name="bot-field" />
-								</label>
-							</p>
+							<input type="hidden" name="bot-field" />
+
 							<div className="flex flex-col gap-1 sm:col-span-5">
 								<Animations delay={0.3}>
 									<label htmlFor="name" className="text-dark text-lg">
@@ -175,11 +185,10 @@ const ContactSection = () => {
 								</Animations>
 								<input
 									required
-									type="number"
+									type="text"
 									name="amount"
 									id="amount"
 									placeholder="ex. 1"
-									min="1"
 									className="px-5 py-3 bg-light-300 rounded-[10px] focus outline-accent"
 								/>
 							</div>
