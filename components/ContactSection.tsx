@@ -15,14 +15,12 @@ const ContactSection = () => {
 		e.preventDefault();
 		const form = e.currentTarget;
 		const formData = new FormData(form);
-		const formEntries = Object.fromEntries(formData);
+
 		try {
 			await fetch("/", {
 				method: "POST",
 				headers: { "Content-Type": "application/x-www-form-urlencoded" },
-				body: new URLSearchParams(
-					formEntries as Record<string, string>,
-				).toString(),
+				body: new URLSearchParams(formData as any).toString(),
 			});
 			form.reset();
 			setShowSuccessPopup(true);
@@ -82,10 +80,17 @@ const ContactSection = () => {
 							name="contact"
 							method="POST"
 							data-netlify="true"
+							data-netlify-honeypot="bot-field"
 							onSubmit={handleSubmit}
 							className="grid grid-cols-1 sm:grid-cols-5 gap-5 pt-8"
 						>
 							<input type="hidden" name="form-name" value="contact" />
+							<p className="hidden">
+								<label>
+									Don't fill this out if you're human:{" "}
+									<input name="bot-field" />
+								</label>
+							</p>
 							<div className="flex flex-col gap-1 sm:col-span-5">
 								<Animations delay={0.3}>
 									<label htmlFor="name" className="text-dark text-lg">
@@ -169,10 +174,11 @@ const ContactSection = () => {
 								</Animations>
 								<input
 									required
-									type="text"
+									type="number"
 									name="amount"
 									id="amount"
 									placeholder="ex. 1"
+									min="1"
 									className="px-5 py-3 bg-light-300 rounded-[10px] focus outline-accent"
 								/>
 							</div>
