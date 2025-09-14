@@ -1,6 +1,9 @@
 [build]
-  publish = ".next"
-  command = "npm run build"
+  publish = "out" # Change to the static export directory
+  command = "next build"
 
-[[plugins]]
-  package = "@netlify/plugin-nextjs"
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+  conditions = { Method = ["GET"] } # Ensure POST requests are not redirected

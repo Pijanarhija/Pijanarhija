@@ -1,4 +1,5 @@
 "use client";
+
 import Image from "next/image";
 import Link from "next/link";
 import type { FormEvent } from "react";
@@ -11,37 +12,44 @@ import ImageAnimations from "./ImageAnimations";
 const ContactSection = () => {
 	const [showSuccessPopup, setShowSuccessPopup] = useState(false);
 	const [showErrorPopup, setShowErrorPopup] = useState(false);
+	const [isSubmitting, setIsSubmitting] = useState(false);
 
 	const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
+		setIsSubmitting(true);
+
 		const form = e.currentTarget;
 		const formData = new FormData(form);
-		const formEntries = Object.fromEntries(formData);
-		console.log("Submitting form data:", formEntries);
+
+		// Ensure form-name is included
+		formData.append("form-name", "contact");
+
+		console.log("Submitting form data:", Object.fromEntries(formData));
 
 		try {
 			const response = await fetch("/", {
 				method: "POST",
 				headers: { "Content-Type": "application/x-www-form-urlencoded" },
 				body: new URLSearchParams(
-					formEntries as Record<string, string>,
+					formData as unknown as Record<string, string>,
 				).toString(),
 			});
-			const responseText = await response.text();
-			console.log("Response status:", response.status);
-			console.log("Response body:", responseText);
 
-			if (response.ok && responseText.includes("Success")) {
+			console.log("Response status:", response.status);
+
+			if (response.ok) {
 				console.log("Form submitted successfully to Netlify!");
 				form.reset();
 				setShowSuccessPopup(true);
 			} else {
-				console.error("Form submission failed:", response.status, responseText);
+				console.error("Form submission failed:", response.status);
 				setShowErrorPopup(true);
 			}
 		} catch (error) {
-			console.error("Fetch error:", error);
+			console.error("Network error:", error);
 			setShowErrorPopup(true);
+		} finally {
+			setIsSubmitting(false);
 		}
 	};
 
@@ -55,6 +63,21 @@ const ContactSection = () => {
 			className="relative overflow-hidden bg-accent py-16 md:py-24 lg:py-36"
 			id="контакт"
 		>
+			{/* Hidden form for Netlify detection */}
+			<form
+				name="contact"
+				data-netlify="true"
+				netlify-honeypot="bot-field"
+				hidden
+			>
+				<input type="text" name="name" />
+				<input type="email" name="email" />
+				<input type="text" name="phone" />
+				<input type="text" name="city" />
+				<input type="text" name="address" />
+				<input type="text" name="amount" />
+			</form>
+
 			<div className="container mx-auto px-4 lg:px-6">
 				<div className="grid grid-cols-1 lg:grid-cols-2 items-center gap-8 bg-light-100 lg:rounded-xl px-5 md:px-10 py-9 md:py-14">
 					<div className="relative h-full w-full overflow-hidden rounded-lg max-lg:hidden">
@@ -103,6 +126,7 @@ const ContactSection = () => {
 						>
 							<input type="hidden" name="form-name" value="contact" />
 							<input type="hidden" name="bot-field" />
+
 							<div className="flex flex-col gap-1 sm:col-span-5">
 								<Animations delay={0.3}>
 									<label htmlFor="name" className="text-dark text-lg">
@@ -114,8 +138,9 @@ const ContactSection = () => {
 									type="text"
 									name="name"
 									id="name"
-									placeholder="ex. Ангел Стојковски"
+									placeholder="ex. Ангел Стojковски"
 									className="px-5 py-3 bg-light-300 rounded-[10px] focus outline-accent"
+									disabled={isSubmitting}
 								/>
 							</div>
 							<div className="flex flex-col gap-1 sm:col-span-3">
@@ -131,6 +156,7 @@ const ContactSection = () => {
 									id="email"
 									placeholder="ex. a.stojkovski@gmail.com"
 									className="px-5 py-3 bg-light-300 rounded-[10px] focus outline-accent"
+									disabled={isSubmitting}
 								/>
 							</div>
 							<div className="flex flex-col gap-1 sm:col-span-2">
@@ -146,6 +172,7 @@ const ContactSection = () => {
 									id="phone"
 									placeholder="ex. +389 070 070 070"
 									className="px-5 py-3 bg-light-300 rounded-[10px] focus outline-accent"
+									disabled={isSubmitting}
 								/>
 							</div>
 							<div className="flex flex-col gap-1 sm:col-span-2">
@@ -161,6 +188,7 @@ const ContactSection = () => {
 									id="city"
 									placeholder="ex. 1000 Скопје"
 									className="px-5 py-3 bg-light-300 rounded-[10px] focus outline-accent"
+									disabled={isSubmitting}
 								/>
 							</div>
 							<div className="flex flex-col gap-1 sm:col-span-3">
@@ -176,6 +204,7 @@ const ContactSection = () => {
 									id="address"
 									placeholder="ex. Партизанска 93 / 4-5"
 									className="px-5 py-3 bg-light-300 rounded-[10px] focus outline-accent"
+									disabled={isSubmitting}
 								/>
 							</div>
 							<div className="flex flex-col gap-1 sm:col-span-5">
@@ -191,14 +220,16 @@ const ContactSection = () => {
 									id="amount"
 									placeholder="ex. 1"
 									className="px-5 py-3 bg-light-300 rounded-[10px] focus outline-accent"
+									disabled={isSubmitting}
 								/>
 							</div>
 							<div className="sm:col-span-5">
 								<button
 									type="submit"
-									className="flex items-center justify-center cursor-pointer w-full bg-accent border border-accent text-xl text-light-100 px-7 py-4 font-bold hover:bg-light-100 hover:text-accent transition-colors duration-300 ease-in-out"
+									disabled={isSubmitting}
+									className="flex items-center justify-center cursor-pointer w-full bg-accent border border-accent text-xl text-light-100 px-7 py-4 font-bold hover:bg-light-100 hover:text-accent transition-colors duration-300 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed"
 								>
-									Оствари нарачка
+									{isSubmitting ? "Се испраќа..." : "Оствари нарачка"}
 								</button>
 								<div className="sm:col-span-5 pt-6">
 									<p className="text-body">
@@ -213,6 +244,7 @@ const ContactSection = () => {
 					</div>
 				</div>
 			</div>
+
 			{/* Success Popup */}
 			{showSuccessPopup && (
 				<div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
@@ -245,6 +277,7 @@ const ContactSection = () => {
 					</div>
 				</div>
 			)}
+
 			{/* Error Popup */}
 			{showErrorPopup && (
 				<div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
@@ -258,16 +291,16 @@ const ContactSection = () => {
 						</button>
 						<div className="text-center">
 							<h3 className="text-dark mb-2 text-center uppercase pt-10 pb-5">
-								Submission Failed
+								Грешка при испраќање
 							</h3>
 							<p className="text-body text-center pb-16">
-								Something went wrong. Please try again later.
+								Нешто тргна наопаку. Ве молиме обидете се повторно подоцна.
 							</p>
 							<button
 								onClick={closePopup}
-								className="flex items-center justify-center cursor-pointer w-full bg-[#2DCC70] border border-[#2DCC70] text-xl text-light-100 px-7 py-4 font-bold hover:bg-light-100 hover:text-[#2DCC70] transition-colors duration-300 ease-in-out"
+								className="flex items-center justify-center cursor-pointer w-full bg-[#DC3545] border border-[#DC3545] text-xl text-light-100 px-7 py-4 font-bold hover:bg-light-100 hover:text-[#DC3545] transition-colors duration-300 ease-in-out"
 							>
-								Close
+								Затвори
 							</button>
 						</div>
 					</div>
